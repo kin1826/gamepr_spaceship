@@ -19,6 +19,7 @@ public class PlayerShooting : MonoBehaviour
     {
         Fire(firePointLeft);
         Fire(firePointRight);
+        AudioManager.instance.PlaySFX(AudioManager.instance.shootSound);
     }
 
     void Fire(Transform firePoint)

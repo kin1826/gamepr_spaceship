@@ -29,6 +29,9 @@ public class PlayerHeath : MonoBehaviour
             currentHealth = 0;
         
         uiHealth.UpdateHearts(currentHealth);
+        
+        //sound effect
+        AudioManager.instance.PlaySFX(AudioManager.instance.damageSound);
 
         if (currentHealth <= 0)
             Die();
@@ -36,8 +39,12 @@ public class PlayerHeath : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Game Over");
+        
+        //sound effect
+        AudioManager.instance.PlaySFX(AudioManager.instance.shipDestroySound);
         Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
+        
+        GameManager.instance.GameOver();
     }
 }
