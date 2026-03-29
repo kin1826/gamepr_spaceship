@@ -1,10 +1,12 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class MainMenu : MonoBehaviour
 {
     public GameObject guidePanel;
+    public CanvasGroup guidePanelCanvas;
     
     public TextMeshProUGUI highScoreText;
     
@@ -13,7 +15,6 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         LoadGame();
-        guidePanel.SetActive(false);
         AudioManager.instance.PlayMusic(AudioManager.instance.menuMusic);
     }
 
@@ -35,6 +36,7 @@ public class MainMenu : MonoBehaviour
     public void OpenGuide()
     {
         guidePanel.SetActive(true);
+        AnimPanel(guidePanel, guidePanelCanvas);
     }
 
     public void CloseGuide()
@@ -54,7 +56,23 @@ public class MainMenu : MonoBehaviour
                    
             highScoreText.text = "Highest point: " + highScore;
         }
+    }
+    
+    public void AnimPanel(GameObject panel, CanvasGroup canvasGroup)
+    {
+        // reset trạng thái ban đầu
+        panel.transform.localScale = Vector3.zero;
+        canvasGroup.alpha = 0;
 
-        
+        // scale pop (nảy nảy)
+        panel.transform
+            .DOScale(Vector3.one, 0.4f)
+            .SetEase(Ease.OutBack)
+            .SetUpdate(true); // quan trọng khi timeScale = 0
+
+        // fade in
+        canvasGroup
+            .DOFade(1, 0.3f)
+            .SetUpdate(true);
     }
 }

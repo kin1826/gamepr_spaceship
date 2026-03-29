@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public int damage = 1;
+    public int damage = GameConfig.Bullet.damage[0];
     
     public GameObject hitEffectPrefab;
     

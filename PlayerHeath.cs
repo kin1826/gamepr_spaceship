@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHeath : MonoBehaviour
 {
-    public int maxHealth = 5;
+    public int maxHealth = 5; //Not change
     public int currentHealth;
 
     public UIHealth uiHealth;

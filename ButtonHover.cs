@@ -6,8 +6,8 @@ public class ButtonHover : MonoBehaviour,
     IPointerDownHandler, IPointerUpHandler
 {
     public Vector3 normalScale = Vector3.one;
-    public Vector3 hoverScale = new Vector3(1.05f, 1.05f, 1.05f);
-    public Vector3 pressedScale = new Vector3(0.85f, 0.85f, 0.85f);
+    public Vector3 hoverScale = GameConfig.UI.hoverScaleBtn;
+    public Vector3 pressedScale = GameConfig.UI.pressedScaleBtn;
     public float speed = 10f;
 
     private bool isHovering = false;

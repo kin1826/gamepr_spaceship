@@ -12,6 +12,10 @@ public class AudioManager : MonoBehaviour
     public AudioClip hitSound;
     public AudioClip damageSound;
     public AudioClip shipDestroySound;
+    public AudioClip starSound;
+    public AudioClip winSound;
+    public AudioClip winVoice;
+    public AudioClip gameOverSound;
     
     public AudioClip clickSound;
 
