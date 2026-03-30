@@ -25,7 +25,7 @@ public static class GameConfig
     //Process setting
     public static class Process
     {
-        public static int maxProcess = 5;
+        public static int maxProcess = 40;
     }
     
 }

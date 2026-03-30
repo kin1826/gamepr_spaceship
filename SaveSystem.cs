@@ -12,14 +12,17 @@ public static class SaveSystem
         Debug.Log("Saved to: " + path);
     }
 
-    public static GameData Load()
-    {
-        if (File.Exists(path))
-        {
-            string json = File.ReadAllText(path);
-            return JsonUtility.FromJson<GameData>(json);
-        }
-
-        return new GameData(); // default nếu chưa có save
-    }
+    // public static void Load()
+    // {
+    //     if (File.Exists(path))
+    //     {
+    //         string json = File.ReadAllText(path);
+    //         return JsonUtility.FromJson<GameData>(json);
+    //     }
+    //     
+    //     GameData.
+    //     
+    //
+    //     return new GameData(); // default nếu chưa có save
+    // }
 }

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
 
@@ -7,13 +8,20 @@ public class MainMenu : MonoBehaviour
 {
     public GameObject guidePanel;
     public CanvasGroup guidePanelCanvas;
+    public GameObject selectShipPanel;
+    public CanvasGroup selectShipPanelCanvas;
     
     public TextMeshProUGUI highScoreText;
     
+    public Image selectShipImage;
+    
     public int highScore = 0;
+
+    public GameData data;
 
     void Start()
     {
+        
         LoadGame();
         AudioManager.instance.PlayMusic(AudioManager.instance.menuMusic);
     }
@@ -46,13 +54,12 @@ public class MainMenu : MonoBehaviour
     
     private void LoadGame()
     {
-        GameData data = SaveSystem.Load();
+        GameData.Load();
+        selectShipImage.sprite = GameData.shipData.levelSprites[4];
 
         if (data != null)
         {
-            highScore = data.highScore;
-            int currentScore = data.currentScore;
-            string skin = data.playerSkin;
+            highScore = GameData.highScore;
                    
             highScoreText.text = "Highest point: " + highScore;
         }
@@ -74,5 +81,26 @@ public class MainMenu : MonoBehaviour
         canvasGroup
             .DOFade(1, 0.3f)
             .SetUpdate(true);
+    }
+
+    public void OpenSelectShip()
+    {
+        selectShipPanel.SetActive(true);
+        AnimPanel(selectShipPanel, selectShipPanelCanvas);
+    }
+    public void CloseSelectShip()
+    {
+        selectShipPanel.SetActive(false);
+        SelectShip();
+    }
+
+    public void SelectShip()
+    {
+        ShipData ship = GameData.shipData;
+
+        selectShipImage.sprite = ship.levelSprites[
+            ship.levelSprites.Length - 1
+        ];
+
     }
 }

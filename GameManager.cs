@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     
+    public PlayerVisual playerVisual;
+    
     public GameObject gameOverPanel;
     public CanvasGroup gameOverPanelCanvas;
     public GameObject gamePausePanel;
@@ -20,7 +22,7 @@ public class GameManager : MonoBehaviour
     public bool isHighest = false;
     //Save
     public int currentLevel = 1;
-    public string currentSkin = "1";
+    public ShipData currentSkin;
     
     
     public TextMeshProUGUI scoreText;
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        GameData.Load();
         instance = this;
         CacheProcessFillImage();
     }
@@ -44,6 +47,7 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.instance.PlayMusic(AudioManager.instance.gameMusic);
         UpdateUI();
+        // currentSkin = GameData.shipData;
     }
 
     public void AddScore(int amount)
@@ -114,24 +118,24 @@ public class GameManager : MonoBehaviour
 
     private void SaveGame()
     {
-        GameData oldData = SaveSystem.Load();
-
-        if (score > oldData.highScore)
+        if (score > GameData.highScore)
         {
             isHighest = true;
-            oldData.highScore = score;
+            GameData.highScore = score;
         }
         
-        oldData.currentScore = score;
-        oldData.playerSkin = currentSkin;
-        oldData.level = currentLevel;
+        GameData.currentScore = score;
+        // GameData.shipData = currentSkin;
+        GameData.level = currentLevel;
         
-        SaveSystem.Save(oldData);
+        GameData.Save();
     }
     
     public void AddProcess(int amount)
     {
         currentProcess += amount;
+        playerVisual.UpdateSprite(currentProcess);
+        Debug.Log(currentProcess + " -- " + maxProcess);
 
         if (currentProcess >= maxProcess)
         {
