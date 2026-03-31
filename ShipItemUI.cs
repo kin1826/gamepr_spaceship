@@ -17,6 +17,8 @@ public class ShipItemUI : MonoBehaviour
         icon.sprite = data.levelSprites[
             data.levelSprites.Length - 1
         ];
+        
+        selectUI.SelectShip(GameData.shipData);
 
         GetComponent<Button>().onClick.AddListener(OnClick);
     }

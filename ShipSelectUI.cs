@@ -22,8 +22,6 @@ public class ShipSelectUI : MonoBehaviour
             ship.levelSprites.Length - 1
         ];
         
-        
-        
         for (int i = 0; i < levelImages.Length; i++)
         {
             if (i < ship.levelSprites.Length)

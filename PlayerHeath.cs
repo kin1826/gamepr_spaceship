@@ -12,6 +12,8 @@ public class PlayerHeath : MonoBehaviour
     public CameraShake cameraShake;
     
     public DamageFlash damageFlash;
+
+    public PlayerShield playerShield;
     
     void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerHeath : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (playerShield != null && playerShield.IsShieldActive()) 
+            return;
         currentHealth -= damage;
         cameraShake.Shake();
         damageFlash.Flash();

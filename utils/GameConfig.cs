@@ -28,4 +28,10 @@ public static class GameConfig
         public static int maxProcess = 40;
     }
     
+    public static class Shields
+    {
+        public static float duration = 3f;
+        public static float blinkTime = 0.5f;
+    }
+    
 }

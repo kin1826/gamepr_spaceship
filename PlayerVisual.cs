@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
 {
+    public PlayerShield shield;
+    
     private SpriteRenderer sr;
 
     private int currentIndex = -1;
@@ -45,5 +47,7 @@ public class PlayerVisual : MonoBehaviour
         currentIndex = index;
 
         sr.sprite = ship.levelSprites[index];
+        if (index != 0)
+            shield.ActivateShield();
     }
 }
