@@ -3,30 +3,39 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     public float speed;
-    public int maxHealth = 2;
+    public int maxHealth = 5;
     private int currentHealth;
+    private float scale;
 
     public GameObject explosionPrefab;
+    
+    private Transform player;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        // currentHealth = maxHealth;
+        
+        //get Player
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         
         Rigidbody2D rb2d = GetComponent<Rigidbody2D>();
-        Vector2 dir = new Vector2(-1f, Random.Range(-0.3f, 0.3f)); 
+        Vector2 dir = (player.position - transform.position).normalized;
         
         //speed
-        speed = Random.Range(2f, 6f);
+        speed = Random.Range(4f, 8f);
         
         //size
-        float scale = Random.Range(0.2f, 0.6f);
+        scale = Random.Range(0.2f, 0.6f);
         transform.localScale = new Vector3(scale, scale, 1);
         
         //hướng bay
-        rb2d.linearVelocity = dir.normalized * speed;
+        rb2d.linearVelocity = dir * speed;
         
         //rotation
         rb2d.angularVelocity = Random.Range(-200f, 200f);
+        
+        //health theo size
+        currentHealth = maxHealth + Mathf.RoundToInt(scale * 10);
         
         //destroy
         Destroy(gameObject, 7f);
@@ -62,7 +71,11 @@ public class Asteroid : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            int score = Mathf.RoundToInt(scale * 20);
+            GameManager.instance.AddScore(score);
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            //sound
+            AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound);
             Destroy(gameObject);
         }
     }

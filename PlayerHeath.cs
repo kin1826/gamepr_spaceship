@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHeath : MonoBehaviour
 {
-    public int maxHealth = 5;
+    public int maxHealth = 5; //Not change
     public int currentHealth;
 
     public UIHealth uiHealth;
@@ -12,6 +12,8 @@ public class PlayerHeath : MonoBehaviour
     public CameraShake cameraShake;
     
     public DamageFlash damageFlash;
+
+    public PlayerShield playerShield;
     
     void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerHeath : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (playerShield != null && playerShield.IsShieldActive()) 
+            return;
         currentHealth -= damage;
         cameraShake.Shake();
         damageFlash.Flash();
@@ -29,6 +33,9 @@ public class PlayerHeath : MonoBehaviour
             currentHealth = 0;
         
         uiHealth.UpdateHearts(currentHealth);
+        
+        //sound effect
+        AudioManager.instance.PlaySFX(AudioManager.instance.damageSound);
 
         if (currentHealth <= 0)
             Die();
@@ -36,8 +43,12 @@ public class PlayerHeath : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Game Over");
+        
+        //sound effect
+        AudioManager.instance.PlaySFX(AudioManager.instance.shipDestroySound);
         Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
+        
+        GameManager.instance.GameOver();
     }
 }

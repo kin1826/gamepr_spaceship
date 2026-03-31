@@ -5,7 +5,7 @@ public class PlayerShooting : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform firePointLeft;
     public Transform firePointRight;
-    public float bulletSpeed = 10f;
+    public float bulletSpeed = GameConfig.Bullet.speed[0];
 
     void Update()
     {
@@ -19,6 +19,7 @@ public class PlayerShooting : MonoBehaviour
     {
         Fire(firePointLeft);
         Fire(firePointRight);
+        AudioManager.instance.PlaySFX(AudioManager.instance.shootSound);
     }
 
     void Fire(Transform firePoint)
