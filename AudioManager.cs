@@ -16,6 +16,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip winSound;
     public AudioClip winVoice;
     public AudioClip gameOverSound;
+    public AudioClip levelUpSound;
     
     public AudioClip clickSound;
 

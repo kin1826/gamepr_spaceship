@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public bool isHighest = false;
     //Save
     public int currentLevel = 1;
-    public ShipData currentSkin;
+    public ShipData shipData;
     
     
     public TextMeshProUGUI scoreText;
@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     public int currentProcess = 0;
     public int maxProcess = GameConfig.Process.maxProcess;
     public Slider slider;
+    [SerializeField] private GameObject markerPrefab;
+    [SerializeField] private RectTransform markerParent;
     [SerializeField] private Image processFillImage;
     [SerializeField] private Sprite[] processStageSprites = new Sprite[5];
     
@@ -47,7 +49,36 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.instance.PlayMusic(AudioManager.instance.gameMusic);
         UpdateUI();
-        // currentSkin = GameData.shipData;
+        shipData = GameData.shipData;
+
+        Debug.Log(markerPrefab);
+        Debug.Log(markerParent);
+        Debug.Log(shipData);
+
+        SetUpSlider(maxProcess);
+    }
+    
+    public void SetUpSlider(int maxProcessSlider)
+    {
+        // clear marker cũ
+        foreach (Transform child in markerParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (float threshold in shipData.thresholds)
+        {
+            float percent = threshold / maxProcessSlider;
+
+            Debug.Log("Spawn marker at: " + percent);
+
+            GameObject marker = Instantiate(markerPrefab, markerParent);
+            RectTransform rt = marker.GetComponent<RectTransform>();
+
+            rt.anchorMin = new Vector2(percent, 0.5f);
+            rt.anchorMax = new Vector2(percent, 0.5f);
+            rt.anchoredPosition = Vector2.zero;
+        }
     }
 
     public void AddScore(int amount)
@@ -217,6 +248,9 @@ public class GameManager : MonoBehaviour
         
         gameWinPanel.SetActive(true);
         instance.AnimPanel(gameWinPanel, winPanelCanvas);
+
+
+        SaveGame();
     }
 
     private System.Collections.IEnumerator ShowWinPanelAfterDelay()
