@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerHeath : MonoBehaviour
 {
+    public static PlayerHeath instance;
+    
     public int maxHealth = 5; //Not change
     public int currentHealth;
 
@@ -17,14 +19,19 @@ public class PlayerHeath : MonoBehaviour
     
     void Start()
     {
+        instance = this;
         currentHealth = maxHealth;
         uiHealth.UpdateHearts(currentHealth);
     }
 
     public void TakeDamage(int damage)
     {
-        if (playerShield != null && playerShield.IsShieldActive()) 
+        if (playerShield != null && playerShield.IsShieldActive())
+        {
+            AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound);
             return;
+        }
+            
         currentHealth -= damage;
         cameraShake.Shake();
         damageFlash.Flash();
@@ -39,6 +46,15 @@ public class PlayerHeath : MonoBehaviour
 
         if (currentHealth <= 0)
             Die();
+    }
+
+    public void Heal(int healAmount)
+    {
+        currentHealth += healAmount;
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
+        uiHealth.UpdateHearts(currentHealth);
     }
 
     void Die()

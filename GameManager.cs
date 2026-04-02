@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public bool isHighest = false;
     //Save
     public int currentLevel = 1;
-    public ShipData currentSkin;
+    public ShipData shipData;
     
     
     public TextMeshProUGUI scoreText;
@@ -32,8 +32,17 @@ public class GameManager : MonoBehaviour
     public int currentProcess = 0;
     public int maxProcess = GameConfig.Process.maxProcess;
     public Slider slider;
+    [SerializeField] private GameObject markerPrefab;
+    [SerializeField] private RectTransform markerParent;
     [SerializeField] private Image processFillImage;
     [SerializeField] private Sprite[] processStageSprites = new Sprite[5];
+    
+    //Energy
+    public float maxEnergy = 100f;
+    public float currentEnergy;
+    public float drainRate = 20f; // hao mỗi giây
+    public float regenRate = 10f; // hồi mỗi giây
+    public Slider energySlider;
     
 
     void Awake()
@@ -47,7 +56,44 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.instance.PlayMusic(AudioManager.instance.gameMusic);
         UpdateUI();
-        // currentSkin = GameData.shipData;
+        shipData = GameData.shipData;
+
+        Debug.Log(markerPrefab);
+        Debug.Log(markerParent);
+        Debug.Log(shipData);
+
+        SetUpSlider(maxProcess);
+        
+        // Init Energy
+        currentEnergy = maxEnergy;
+        if (energySlider != null)
+        {
+            energySlider.maxValue = maxEnergy;
+            energySlider.value = currentEnergy;
+        }
+    }
+    
+    public void SetUpSlider(int maxProcessSlider)
+    {
+        // clear marker cũ
+        foreach (Transform child in markerParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (float threshold in shipData.thresholds)
+        {
+            float percent = threshold / maxProcessSlider;
+
+            Debug.Log("Spawn marker at: " + percent);
+
+            GameObject marker = Instantiate(markerPrefab, markerParent);
+            RectTransform rt = marker.GetComponent<RectTransform>();
+
+            rt.anchorMin = new Vector2(percent, 0.5f);
+            rt.anchorMax = new Vector2(percent, 0.5f);
+            rt.anchoredPosition = Vector2.zero;
+        }
     }
 
     public void AddScore(int amount)
@@ -63,6 +109,40 @@ public class GameManager : MonoBehaviour
         float processRatio = maxProcess > 0 ? (float)currentProcess / maxProcess : 0f;
         slider.value = processRatio;
         UpdateProcessStageSprite(processRatio);
+    }
+    
+    public void UpdateEnergy(bool isBoost)
+    {
+        if (isBoost)
+        {
+            currentEnergy -= drainRate * Time.deltaTime;
+            if (currentEnergy <= 0)
+            {
+                currentEnergy = 0;
+            }
+        }
+        else
+        {
+            currentEnergy += regenRate * Time.deltaTime;
+        }
+
+        // Giới hạn năng lượng trong khoảng [0, maxEnergy]
+        currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
+        
+        if (energySlider != null)
+        {
+            energySlider.value = currentEnergy;
+            
+            if (currentEnergy < 20)
+                energySlider.fillRect.GetComponent<UnityEngine.UI.Image>().color = Color.red;
+            else
+                energySlider.fillRect.GetComponent<UnityEngine.UI.Image>().color = Color.green;
+        }
+    }
+    
+    public bool CanBoost()
+    {
+        return currentEnergy > 0;
     }
     
     public void GameOver()
@@ -122,12 +202,14 @@ public class GameManager : MonoBehaviour
         {
             isHighest = true;
             GameData.highScore = score;
+            Debug.Log($"🆕 Highscore mới! {score}");
         }
         
         GameData.currentScore = score;
         // GameData.shipData = currentSkin;
         GameData.level = currentLevel;
         
+        Debug.Log($"💾 SaveGame gọi với Score: {score}, HighScore: {GameData.highScore}");
         GameData.Save();
     }
     
@@ -217,6 +299,9 @@ public class GameManager : MonoBehaviour
         
         gameWinPanel.SetActive(true);
         instance.AnimPanel(gameWinPanel, winPanelCanvas);
+
+
+        SaveGame();
     }
 
     private System.Collections.IEnumerator ShowWinPanelAfterDelay()

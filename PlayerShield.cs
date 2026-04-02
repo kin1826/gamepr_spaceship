@@ -32,6 +32,7 @@ public class PlayerShield : MonoBehaviour
     IEnumerator ShieldRoutine()
     {
         isActive = true;
+        AudioManager.instance.PlaySFX(AudioManager.instance.levelUpSound);
         shieldObject.SetActive(true);
 
         float timer = 0f;

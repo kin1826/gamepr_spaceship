@@ -11,6 +11,9 @@ public class Asteroid : MonoBehaviour
     
     private Transform player;
 
+    public GameObject heartPrefab;
+    [Range(0f, 1f)] public float heartDropChance = 0.3f; // 0% đến 100% cơ hội rơi heart
+
     void Start()
     {
         // currentHealth = maxHealth;
@@ -76,7 +79,18 @@ public class Asteroid : MonoBehaviour
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             //sound
             AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound);
+            RandHeartDrop();
             Destroy(gameObject);
+        }
+    }
+
+    public void RandHeartDrop()
+    {
+        float rand = Random.value; // 0.0 đến 1.0
+
+        if (rand < heartDropChance)
+        {
+            Instantiate(heartPrefab, transform.position, Quaternion.identity);
         }
     }
 }

@@ -17,7 +17,7 @@ public class MainMenu : MonoBehaviour
     
     public int highScore = 0;
 
-    public GameData data;
+    // public GameData data;
 
     void Start()
     {
@@ -57,12 +57,8 @@ public class MainMenu : MonoBehaviour
         GameData.Load();
         selectShipImage.sprite = GameData.shipData.levelSprites[4];
 
-        if (data != null)
-        {
-            highScore = GameData.highScore;
-                   
-            highScoreText.text = "Highest point: " + highScore;
-        }
+        highScore = GameData.highScore;
+        highScoreText.text = "Highest point: " + highScore;
     }
     
     public void AnimPanel(GameObject panel, CanvasGroup canvasGroup)

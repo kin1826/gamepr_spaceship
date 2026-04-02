@@ -27,12 +27,17 @@ public class GameData
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
             highScore = data.highScore;
+            Debug.Log($"✓ Load thành công! HighScore: {highScore}");
 
             // 👉 thử load ship đã lưu
             if (!string.IsNullOrEmpty(data.shipName))
             {
                 shipData = Resources.Load<ShipData>("Ships/" + data.shipName);
             }
+        }
+        else
+        {
+            Debug.LogWarning($"File save không tồn tại: {path}");
         }
 
         // 👉 fallback nếu null
@@ -46,13 +51,21 @@ public class GameData
     // SAVE
     public static void Save()
     {
-        SaveData data = new SaveData();
+        try
+        {
+            SaveData data = new SaveData();
 
-        data.highScore = highScore;
+            data.highScore = highScore;
+            data.shipName = shipData != null ? shipData.name : "Ship_Yellow";
 
-        data.shipName = shipData != null ? shipData.name : "Ship_Yellow";
-
-        string json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(path, json);
+            string json = JsonUtility.ToJson(data, true);
+            File.WriteAllText(path, json);
+            
+            Debug.Log($"✓ Save thành công! Path: {path}\nHighScore: {highScore}\nShip: {data.shipName}");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"✗ Lỗi save: {e.Message}");
+        }
     }
 }
